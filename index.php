@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IMPORTANT PEOPLE TRACKING SYSTEM</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: auto;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        iframe {
+            width: 100%;
+            height: 300px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h1:hover {
+            color: red;
+        }
+
+        h2:hover {
+            color: green;
+        }
+
+        /* Center the Separation Distances */
+        .separation-distances {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>IMPORTANT PEOPLE TRACKER</h1>
+
+    <?php
+    // Database configuration
+    $servername = "localhost";
+    $username = "hyperese";
+    $password = "CP@%Eergy%%%%354@";
+    $dbname = "hyperese_tracker";
+
+    // Create a database connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check the database connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Function to calculate Haversine distance
+    function calculateDistance($lat1, $lon1, $lat2, $lon2) {
+        $R = 6371; // Earth radius in kilometers
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+        $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon/2) * sin($dLon/2);
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        return $R * $c;
+    }
+
+    // Query and display data for CONTROL ROOM
+    $sql1 = "SELECT * FROM SensorData_1 ORDER BY id DESC LIMIT 1";
+    $result1 = $conn->query($sql1);
+    if ($result1->num_rows > 0) {
+        echo "<h2>VIP CONTROL ROOM</h2>";
+        echo "<table>";
+        echo "<tr><th>ID</th><th>Latitude</th><th>Longitude</th><th>Signal_strength</th><th>Timestamp</th></tr>";
+        $row1 = $result1->fetch_assoc();
+        echo "<tr><td>" . $row1["id"] . "</td><td>" . $row1["Latitude_S1"] . "</td><td>" . $row1["signal_strength_S1"] . "</td><td>". $row1["Longitude_S1"] . "</td><td>" .$row1["signal_strength_S1"]. "</td><td>". $row1["reading_time"] . "</td></tr>";
+        echo "</table>";
+
+        // Display Google Map for CONTROL ROOM
+        echo "<iframe src='https://maps.google.com/maps?q=" . $row1["Latitude_S1"] . "," . $row1["Longitude_S1"] . "&output=embed'></iframe>";
+    }
+
+    // Query and display data for VIP SECURITY
+    $sql2 = "SELECT * FROM SensorData_2 ORDER BY id DESC LIMIT 1";
+    $result2 = $conn->query($sql2);
+    if ($result2->num_rows > 0) {
+        echo "<h2>VIP SECURITY</h2>";
+        echo "<table>";
+        echo "<tr><th>ID</th><th>Latitude</th><th>Longitude</th><th>Signal_strength</th><th>Timestamp</th></tr>";
+        $row2 = $result2->fetch_assoc();
+        echo "<tr><td>" . $row2["id"] . "</td><td>" . $row2["Latitude_S2"] . "</td><td>" . $row2["signal_strength_S2"] . "</td><td>" . $row2["Longitude_S2"] . "</td><td>"  .$row1["signal_strength_S2"] . "</td><td>".$row2["reading_time"] . "</td></tr>";
+        echo "</table>";
+
+        // Display Google Map for VIP SECURITY
+        echo "<iframe src='https://maps.google.com/maps?q=" . $row2["Latitude_S2"] . "," . $row2["Longitude_S2"] . "&output=embed'></iframe>";
+    }
+
+    // Query and display data for VIP TRACKER
+    $sql3 = "SELECT * FROM SensorData_3 ORDER BY id DESC LIMIT 1";
+    $result3 = $conn->query($sql3);
+    if ($result3->num_rows > 0) {
+        echo "<h2>VIP TRACKER</h2>";
+        echo "<table>";
+        echo "<tr><th>ID</th><th>Latitude</th><th>Longitude</th><th>Signal_strength</th><th>Timestamp</th></tr>";
+        $row3 = $result3->fetch_assoc();
+        echo "<tr><td>" . $row3["id"] . "</td><td>" . $row3["Latitude_S3"]  . "</td><td>" . $row3["signal_strength_S3"]. "</td><td>" . $row3["Longitude_S3"]  . "</td><td>" . $row3["signal_strength_S3"]. "</td><td>" . $row3["reading_time"] . "</td></tr>";
+        echo "</table>";
+
+        // Display Google Map for VIP TRACKER
+        echo "<iframe src='https://maps.google.com/maps?q=" . $row3["Latitude_S3"] . "," . $row3["Longitude_S3"] . "&output=embed'></iframe>";
+    }
+
+    // Calculate and display separation distances
+    if (isset($row1) && isset($row2) && isset($row3)) {
+        $distance1to2 = calculateDistance($row1["Latitude_S1"], $row1["Longitude_S1"], $row2["Latitude_S2"], $row2["Longitude_S2"]);
+        $distance2to3 = calculateDistance($row2["Latitude_S2"], $row2["Longitude_S2"], $row3["Latitude_S3"], $row3["Longitude_S3"]);
+        $distance1to3 = calculateDistance($row1["Latitude_S1"], $row1["Longitude_S1"], $row3["Latitude_S3"], $row3["Longitude_S3"]);
+        
+        echo "<h2 class='separation-distances'>Separation Distances</h2>";
+        echo "<p class='separation-distances'>CONTROL ROOM to VIP SECURITY: " . round($distance1to2, 2) . " km</p>";
+        echo "<p class='separation-distances'>VIP SECURITY to VIP TRACKER: " . round($distance2to3, 2) . " km</p>";
+        echo "<p class='separation-distances'>CONTROL ROOM to VIP TRACKER: " . round($distance1to3, 2) . " km</p>";
+    }
+
+    // Close the database connection
+    $conn->close();
+    ?>
+</body>
+</html>

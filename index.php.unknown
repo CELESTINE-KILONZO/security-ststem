@@ -1,0 +1,33 @@
+CREATE TABLE SensorData_1 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    PM1_0_S1 FLOAT,
+    PM2_5_S1 FLOAT,
+    PM10_S1 FLOAT,
+    Latitude_S1 FLOAT,
+    Longitude_S1 FLOAT,
+    reading_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE SensorData_2 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    PM1_0_S2 FLOAT,
+    PM2_5_S2 FLOAT,
+    PM10_S2 FLOAT,
+    Latitude_S2 FLOAT,
+    Longitude_S2 FLOAT,
+    reading_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE SensorData_3 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    PM1_0_S3 FLOAT,
+    PM2_5_S3 FLOAT,
+    PM10_S3 FLOAT,
+    Latitude_S3 FLOAT,
+    Longitude_S3 FLOAT,
+    reading_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
